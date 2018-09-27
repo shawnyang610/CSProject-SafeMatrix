@@ -1,6 +1,4 @@
-//
-// Created by shawn on 9/23/18.
-//
+
 
 #ifndef SAFE_MATRIX_SAFE_ARRAY_H
 #define SAFE_MATRIX_SAFE_ARRAY_H
@@ -10,6 +8,9 @@ template <typename T>
 class SafeArray {
     T *safe_ary;
     int l,h,size;
+
+    // shared function for initialising empty SafeArray object
+    void init_empty_safeary();
 
 public:
     // constructors
@@ -32,9 +33,8 @@ public:
 };
 
 // implementation
-
 template <typename T>
-SafeArray<T>::SafeArray() {
+void SafeArray<T>::init_empty_safeary() {
     l=0;
     h=-1;
     size = 0;
@@ -42,41 +42,40 @@ SafeArray<T>::SafeArray() {
 }
 
 template <typename T>
+SafeArray<T>::SafeArray() {
+    init_empty_safeary();
+}
+
+template <typename T>
 SafeArray<T>::SafeArray(const int size) {
-    if (size ==0) {
-        l=0;
-        h=-1;
-        SafeArray<T>::size=0;
-        safe_ary=nullptr;
-    }
-    else if (size<0) {
+    if (size<0) {
         std::cout<<"size cannot be negative number."<<std::endl;
         exit(1);
     }
 
-    else {
+    else if(size > 0) {
         l = 0;
         h = size - 1;
-        SafeArray::size=size;
+        this->size=size;
         safe_ary = new T[size];
+    }
+    else {
+        init_empty_safeary();
     }
 }
 
 template <typename T>
 SafeArray<T>::SafeArray(const int l, const int h) {
     if (h == -1 && l == 0){
-        SafeArray<T>::l=0;
-        SafeArray<T>::h=-1;
-        SafeArray<T>::size=0;
-        safe_ary=nullptr;
+        init_empty_safeary();
     }
     else if (h-l<0){
         std::cout<<"size cannot be negative number."<<std::endl;
         exit(1);
     }
     else {
-        SafeArray::l = l;
-        SafeArray::h = h;
+        this->l = l;
+        this->h = h;
         size = h - l + 1;
         safe_ary = new T[size];
     }
@@ -84,12 +83,12 @@ SafeArray<T>::SafeArray(const int l, const int h) {
 
 template <typename T>
 SafeArray<T>::SafeArray(const SafeArray<T>& safe_ary) {
-    SafeArray<T>::l=safe_ary.l;
-    SafeArray<T>::h=safe_ary.h;
-    SafeArray<T>::size=safe_ary.size;
-    SafeArray<T>::safe_ary = new T[SafeArray<T>::size];
+    this->l=safe_ary.l;
+    this->h=safe_ary.h;
+    this->size=safe_ary.size;
+    this->safe_ary = new T[SafeArray<T>::size];
     for (int i=0; i<SafeArray<T>::size; i++)
-        SafeArray<T>::safe_ary[i]=safe_ary.safe_ary[i];
+        this->safe_ary[i]=safe_ary.safe_ary[i];
 }
 
 template <typename T>
@@ -98,24 +97,36 @@ SafeArray<T>::~SafeArray() {
 }
 
 template <typename T>
-SafeArray<T>& SafeArray<T>::operator=(const SafeArray &) {
-    //TODO
+SafeArray<T>& SafeArray<T>::operator=(const SafeArray & safe_ary) {
+    if (this == &safe_ary){
+        return *this;
+    }
+    delete [] this->safe_ary;
+    this->safe_ary = new T [safe_ary.size];
+    for (int i=0; i<safe_ary.size; i++){
+        this->safe_ary[i] = safe_ary.safe_ary[i];
+    }
+    this->l = safe_ary.l;
+    this->h = safe_ary.h;
+    this->size = safe_ary.size;
+    return *this;
 }
 
 template <typename T>
 T& SafeArray<T>::operator[](const int i) {
     if (i<l || i>h){
         std::cout<<"index out of range."<<std::endl;
-        exit(1);
+        throw std::out_of_range("index is out of range");
     }
-    return safe_ary[i-l];
+    else
+        return safe_ary[i-l];
 }
 
 template <typename T>
 void SafeArray<T>::resize(const int l, const int h) {
-    SafeArray<T>::l = l;
-    SafeArray<T>::h = h;
-    SafeArray<T>::size = h-l+1;
+    this->l = l;
+    this->h = h;
+    this->size = h-l+1;
     delete[] safe_ary;
     safe_ary = new T[SafeArray<T>::size];
 }
