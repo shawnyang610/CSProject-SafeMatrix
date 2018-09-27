@@ -4,18 +4,33 @@
 
 #include "tests.hpp"
 #include <iostream>
-
+const int ROW_L = 5;
+const int ROW_H = 10;
+const int COL_L = 0;
+const int COL_H = 2;
 
 
 
 int main() {
-    test_safe_array<int>(5,10);
-    int ROW_L = 5;
-    int ROW_H = 10;
-    int COL_L = 0;
-    int COL_H = 2;
+    int row_l = ROW_L;
+    int row_h = ROW_H;
+    int col_l = COL_L;
+    int col_h = COL_H;
 
-    test_safe_matrix<int>(ROW_L, ROW_H, COL_L, COL_H);
+    std::cout<<"run default test? y/n ";
+    char input;
+    std::cin>>input;
+    if (input=='n'){
+        std::cout<<std::endl<<"enter row lower bound:";
+        std::cin>>row_l;
+        std::cout<<std::endl<<"enter row uppper bound:";
+        std::cin>>row_h;
+        std::cout<<std::endl<<"enter column lower bound:";
+        std::cin>>col_l;
+        std::cout<<std::endl<<"enter column uppper bound:";
+        std::cin>>col_h;
+    }
+    test_safe_matrix<int>(row_l, row_h, col_l, col_h);
 
     return 0;
 }
