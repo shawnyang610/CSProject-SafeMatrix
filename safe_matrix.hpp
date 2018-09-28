@@ -139,9 +139,7 @@ void SafeMatrix<T>::init_nonempty_safematrix(const int row_l, const int row_h, c
     this->col_l= col_l;
     this->col_h= col_h;
     this->col_size= col_h - col_l + 1;
-    this->safe_ary= new SafeArray<T>[this->row_size];
-    for (int i=0; i<this->row_size;i++)
-        this->safe_ary[i].resize(col_l, col_h);
+    this->safe_ary= SafeArray<SafeArray<T>>(row_l, row_h, col_l, col_h) ;
 }
 
 
