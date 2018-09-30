@@ -12,7 +12,7 @@
 template<typename T>
 class SafeMatrix
 {
-    SafeArray<T> *safe_ary;
+    SafeArray<SafeArray<T>> safe_ary;
     int row_l, row_h, row_size, col_l, col_h, col_size;
 public:
     //constructor
@@ -78,15 +78,14 @@ SafeMatrix<T>::SafeMatrix(const SafeMatrix<T>& safe_matrix) {
     this-> col_h = safe_matrix.col_h;
     this-> col_size = safe_matrix.col_size;
 
-    this-> safe_ary = new SafeArray<T>[safe_matrix.row_size];
-    for (int i=0; i<safe_matrix.row_size; i++){
-        this->safe_ary[i]=safe_matrix.safe_ary[i];
-    }
+    this-> safe_ary = safe_matrix.safe_ary;
+//    for (int i=0; i<safe_matrix.row_size; i++){
+//        this->safe_ary=SafeArray<SafeArray<T>> (safe_matrix.safe_ary);
+//    }
 }
 
 template <typename T>
 SafeMatrix<T>::~SafeMatrix() {
-    delete[] safe_ary;
 }
 
 template <typename T>
@@ -94,7 +93,7 @@ SafeMatrix<T>& SafeMatrix<T>::operator=(const SafeMatrix & safe_matrix) {
     if (this == &safe_matrix){
         return *this;
     }
-    delete [] this->safe_ary;
+//    delete [] this->safe_ary;
     this-> row_l = safe_matrix.row_l;
     this-> row_h = safe_matrix.row_h;
     this-> row_size = safe_matrix.row_size;
@@ -102,21 +101,21 @@ SafeMatrix<T>& SafeMatrix<T>::operator=(const SafeMatrix & safe_matrix) {
     this-> col_h = safe_matrix.col_h;
     this-> col_size = safe_matrix.col_size;
 
-    this-> safe_ary = new SafeArray<T>[safe_matrix.row_size];
-    for (int i=0; i<safe_matrix.row_size; i++){
-        this->safe_ary[i]=safe_matrix.safe_ary[i];
-    }
+    this-> safe_ary = safe_matrix.safe_ary;
+//    for (int i=0; i<safe_matrix.row_size; i++){
+//        this->safe_ary[i]=safe_matrix.safe_ary[i];
+//    }
     return *this;
 }
 
 template<typename T>
 SafeArray<T>& SafeMatrix<T>::operator[](const int i) {
-    if (i<row_l || i>row_h){
-        std::cout<<"index out of range."<<std::endl;
-        throw std::out_of_range("index is out of range");
-    }
-    else
-        return safe_ary[i-row_l];
+//    if (i<row_l || i>row_h){
+//        std::cout<<"index out of range."<<std::endl;
+//        throw std::out_of_range("index is out of range");
+//    }
+//    else
+        return safe_ary[i];
 }
 
 
@@ -128,7 +127,7 @@ void SafeMatrix<T>::init_empty_safematrix() {
     col_l=0;
     col_h=-1;
     col_size=col_h-col_l+1;
-    safe_ary= nullptr;
+//    safe_ary= nullptr;
 }
 
 template <typename T>
@@ -139,7 +138,10 @@ void SafeMatrix<T>::init_nonempty_safematrix(const int row_l, const int row_h, c
     this->col_l= col_l;
     this->col_h= col_h;
     this->col_size= col_h - col_l + 1;
-    this->safe_ary= SafeArray<SafeArray<T>>(row_l, row_h, col_l, col_h) ;
+    this->safe_ary.resize(row_l, row_h) ;
+    for (int i=row_l; i<=row_h; i++){
+        safe_ary[i].resize(col_l, col_h);
+    }
 }
 
 
