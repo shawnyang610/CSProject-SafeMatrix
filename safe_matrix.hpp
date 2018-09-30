@@ -13,8 +13,9 @@ template<typename T>
 class SafeMatrix
 {
     SafeArray<SafeArray<T>> safe_ary;
-    int row_l, row_h, row_size, col_l, col_h, col_size;
 public:
+    int row_l, row_h, row_size, col_l, col_h, col_size;
+
     //constructor
     SafeMatrix();
 
@@ -35,6 +36,8 @@ public:
 
     //overload operator=
     SafeMatrix<T>& operator=(const SafeMatrix &); //re-adjust size to the incoming matrix
+
+    SafeMatrix<T> operator* (SafeMatrix &);
 
     //overload operator[], so we can write sm[3][2]
     SafeArray<T>& operator[](const int);
@@ -79,9 +82,6 @@ SafeMatrix<T>::SafeMatrix(const SafeMatrix<T>& safe_matrix) {
     this-> col_size = safe_matrix.col_size;
 
     this-> safe_ary = safe_matrix.safe_ary;
-//    for (int i=0; i<safe_matrix.row_size; i++){
-//        this->safe_ary=SafeArray<SafeArray<T>> (safe_matrix.safe_ary);
-//    }
 }
 
 template <typename T>
@@ -93,7 +93,6 @@ SafeMatrix<T>& SafeMatrix<T>::operator=(const SafeMatrix & safe_matrix) {
     if (this == &safe_matrix){
         return *this;
     }
-//    delete [] this->safe_ary;
     this-> row_l = safe_matrix.row_l;
     this-> row_h = safe_matrix.row_h;
     this-> row_size = safe_matrix.row_size;
@@ -102,19 +101,34 @@ SafeMatrix<T>& SafeMatrix<T>::operator=(const SafeMatrix & safe_matrix) {
     this-> col_size = safe_matrix.col_size;
 
     this-> safe_ary = safe_matrix.safe_ary;
-//    for (int i=0; i<safe_matrix.row_size; i++){
-//        this->safe_ary[i]=safe_matrix.safe_ary[i];
-//    }
     return *this;
+}
+
+template <typename T>
+SafeMatrix<T> SafeMatrix<T>::operator*(SafeMatrix & safe_matrix) {
+    // if illegal size, throw exception
+    if (this->col_size != safe_matrix.row_size){
+        throw std::invalid_argument("Wrong matrix size for multiplication.");
+    }
+    // create a temp matrix with calculated resulting matrix size
+    SafeMatrix<T> temp (this->row_size, safe_matrix.col_size);
+    // populate values into temp matrix
+    for (int i=0; i<temp.row_size;i++){
+        for (int j=0; j<temp.col_size; j++){
+            T sum = 0;
+            for (int k=0; k<safe_matrix.row_size;k++){
+                sum += ((this->safe_ary[i+this->row_l][k+this->col_l]) * (safe_matrix[k+safe_matrix.row_l][j+safe_matrix.col_l]));
+            }
+            temp[i][j] = sum;
+        }
+    }
+    // return temp matrix by value
+    return temp;
 }
 
 template<typename T>
 SafeArray<T>& SafeMatrix<T>::operator[](const int i) {
-//    if (i<row_l || i>row_h){
-//        std::cout<<"index out of range."<<std::endl;
-//        throw std::out_of_range("index is out of range");
-//    }
-//    else
+
         return safe_ary[i];
 }
 
@@ -127,7 +141,6 @@ void SafeMatrix<T>::init_empty_safematrix() {
     col_l=0;
     col_h=-1;
     col_size=col_h-col_l+1;
-//    safe_ary= nullptr;
 }
 
 template <typename T>

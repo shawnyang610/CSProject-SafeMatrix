@@ -30,6 +30,7 @@ int main() {
         std::cout<<std::endl<<"enter column uppper bound:";
         std::cin>>col_h;
     }
+
     test_safe_matrix<int>(row_l, row_h, col_l, col_h);
 
     return 0;
