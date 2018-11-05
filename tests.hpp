@@ -206,7 +206,7 @@ void test_safe_matrix (const int row_l, const int row_h, const int col_l, const 
        read_matrix(res);
    }catch (std::invalid_argument &e){
        std::cout<< e.what()<<std::endl;
-       std::cout<<"test passed!";
+       std::cout<<"test passed!"<<std::endl<<std::endl;
 
    }
 }
