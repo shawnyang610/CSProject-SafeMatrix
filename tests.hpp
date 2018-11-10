@@ -6,7 +6,9 @@
 #define SAFE_MATRIX_SAFE_MATRIX_TEST_H
 
 #include "safe_matrix.hpp"
+#include "vnt.h"
 #include <iostream>
+#include <cmath>
 
 template <typename T>
 void test_safe_array(const int l, const int h) {
@@ -211,7 +213,67 @@ void test_safe_matrix (const int row_l, const int row_h, const int col_l, const 
    }
 }
 
+void test_VNT(){
 
+    auto print_VNT = [](int r, int c, VNT& vnt){
+        for (int i=0; i<r; i++){
+            for (int j=0; j<c; j++){
+                std::cout<< vnt[i][j]<<" ";
+            }
+            std::cout<<std::endl;
+        }
+    };
+
+    std::cout << std::endl << "================ Testing VNL class ================" << std::endl<< std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout  << std::endl<< ":::::::: Testing constructor: VNT A(5,7) ::::::::" << std::endl<< std::endl;
+    std::cout << "initialising..." << std::endl;
+    VNT A(5,7);
+    print_VNT(5,7, A);
+    std::cout << "test passed!" << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout  << std::endl<< ":::::::: Testing  A.add(25); A.add(10) ::::::::" << std::endl<< std::endl;
+    A.add(25);
+    A.add(10);
+    print_VNT(5,7,A);
+    std::cout << "test passed!" << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout  << std::endl<< ":::::::: Testing A.getMin() ::::::::" << std::endl<< std::endl;
+    int min = A.getMin();
+    std::cout <<"min:"<<min<<std::endl;
+    print_VNT(5,7,A);
+    std::cout << "test passed!" << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout  << std::endl<< ":::::::: Testing A.sort(int k[], int size) ::::::::" << std::endl<< std::endl;
+    int k[10] = {2,3,7,12,4,1,7,10,55,12};
+    int size =10;
+    std::cout<<"original array:"<<std::endl;
+    for (int i =0; i<10; i++)
+        std::cout<<k[i]<<" ";
+    std::cout<<std::endl;
+
+    std::cout<<"print matrix"<<std::endl;
+    A.sort(k, size);
+    int r,c;
+    r = c = ceil(sqrt(size));
+    print_VNT(r,c,A);
+
+    std::cout<<"sorted array:"<<std::endl;
+    for (int i =0; i<10; i++)
+        std::cout<<k[i]<<" ";
+    std::cout<<std::endl;
+    std::cout << "test passed!" << std::endl;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout  << std::endl<< ":::::::: Testing A.find(2); A.find(10) ::::::::" << std::endl;
+    std::cout <<"A.find(2):"<<A.find(2)<<", "<<"A.find(10):"<<A.find(100)<<std::endl;
+    std::cout << "test passed!" << std::endl;
+
+}
 
 
 
