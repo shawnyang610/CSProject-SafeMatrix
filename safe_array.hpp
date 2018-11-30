@@ -3,10 +3,12 @@
 #ifndef SAFE_MATRIX_SAFE_ARRAY_H
 #define SAFE_MATRIX_SAFE_ARRAY_H
 #include <iostream>
+#include <memory>
+
 
 template <typename T>
 class SafeArray {
-    T *safe_ary;
+    std::unique_ptr<T[]> safe_ary;
     int l,h,size;
 
     // shared function for initialising empty SafeArray object
@@ -17,6 +19,8 @@ public:
     SafeArray();
     SafeArray(const int);
     SafeArray(const int, const int);
+    SafeArray(const int, const int, const std::initializer_list<T> &);
+    SafeArray(const std::initializer_list<T> &);
     // copy constructor
     SafeArray(const SafeArray<T>&);
     //destructor
@@ -57,7 +61,7 @@ SafeArray<T>::SafeArray(const int size) {
         l = 0;
         h = size - 1;
         this->size=size;
-        safe_ary = new T[size];
+        safe_ary = std::unique_ptr<T[]>(new T[size]);
     }
     else {
         init_empty_safeary();
@@ -77,7 +81,20 @@ SafeArray<T>::SafeArray(const int l, const int h) {
         this->l = l;
         this->h = h;
         size = h - l + 1;
-        safe_ary = new T[size];
+        safe_ary = std::unique_ptr<T[]>(new T[size]);
+    }
+}
+
+
+template <typename T>
+SafeArray<T>::SafeArray(const std::initializer_list<T> & v) {
+    this->l=0;
+    this->h=v.size()-1;
+    size = v.size();
+    safe_ary = std::unique_ptr<T[]>(new T[size]);
+    int i=0;
+    for (auto itr : v){
+        safe_ary[i++] = itr;
     }
 }
 
@@ -86,23 +103,20 @@ SafeArray<T>::SafeArray(const SafeArray<T>& safe_ary) {
     this->l=safe_ary.l;
     this->h=safe_ary.h;
     this->size=safe_ary.size;
-    this->safe_ary = new T[SafeArray<T>::size];
-    for (int i=0; i<SafeArray<T>::size; i++)
+    this->safe_ary = std::unique_ptr<T[]>(new T[this->size]);
+    for (int i=0; i<this->size; i++)
         this->safe_ary[i]=safe_ary.safe_ary[i];
 }
 
 template <typename T>
-SafeArray<T>::~SafeArray() {
-    delete[] safe_ary;
-}
+SafeArray<T>::~SafeArray() {}
 
 template <typename T>
 SafeArray<T>& SafeArray<T>::operator=(const SafeArray & safe_ary) {
     if (this == &safe_ary){
         return *this;
     }
-    delete [] this->safe_ary;
-    this->safe_ary = new T [safe_ary.size];
+    this->safe_ary = std::unique_ptr<T[]>(new T [safe_ary.size]);
     for (int i=0; i<safe_ary.size; i++){
         this->safe_ary[i] = safe_ary.safe_ary[i];
     }
@@ -127,7 +141,6 @@ void SafeArray<T>::resize(const int l, const int h) {
     this->l = l;
     this->h = h;
     this->size = h-l+1;
-    delete[] safe_ary;
-    safe_ary = new T[SafeArray<T>::size];
+    safe_ary = std::unique_ptr<T[]>(new T[SafeArray<T>::size]);
 }
 #endif //SAFE_MATRIX_SAFE_ARRAY_H
