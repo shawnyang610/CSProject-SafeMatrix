@@ -33,5 +33,7 @@ int main() {
 
     test_safe_matrix<int>(row_l, row_h, col_l, col_h);
 
+    test_stl_safe_array();
+
     return 0;
 }

@@ -7,6 +7,7 @@
 
 #include "safe_matrix.hpp"
 #include <iostream>
+#include <algorithm>
 
 template <typename T>
 void test_safe_array(const int l, const int h) {
@@ -211,7 +212,41 @@ void test_safe_matrix (const int row_l, const int row_h, const int col_l, const 
    }
 }
 
+void test_stl_safe_array(){
 
+    std::cout << std::endl << "================ Testing stl iterator for SafeArray ================" << std::endl;
+
+    int l = 0, h = 10;
+    std::cout << "::: Testing STL Safe Array class :::" << std::endl;
+    SafeArray<int> safe_ary(l,h);
+    for (int i=l ;i<=h; i++){
+        safe_ary[h-i]= i*10;
+    }
+    for (auto v: safe_ary){
+        std::cout<<v<<" ";
+    }
+    std::cout<<std::endl;
+
+    auto found = std::find(safe_ary.begin(), safe_ary.end(), 20);
+    if (found == safe_ary.end()){
+        std::cout<<"20 not found: "<<std::endl;
+    }
+    else{
+        std::cout<<"20 is found: "<<*found<<std::endl;
+    }
+
+
+    for (auto v:safe_ary){
+        std::cout<<v<<" "<<std::endl;
+    }
+    std::cout<<"sorting..."<<std::endl;
+    std::sort(safe_ary.begin(), safe_ary.end());
+
+    for (auto v:safe_ary){
+        std::cout<<v<<" "<<std::endl;
+    }
+    std::cout << std::endl;
+}
 
 
 
