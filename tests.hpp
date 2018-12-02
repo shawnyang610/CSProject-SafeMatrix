@@ -218,6 +218,7 @@ void test_stl_safe_array(){
 
     int l = 0, h = 10;
     std::cout << "::: Testing STL Safe Array class :::" << std::endl;
+    std::cout <<"Loading using index"<<std::endl;
     SafeArray<int> safe_ary(l,h);
     for (int i=l ;i<=h; i++){
         safe_ary[h-i]= i*10;
@@ -235,15 +236,18 @@ void test_stl_safe_array(){
         std::cout<<"20 is found: "<<*found<<std::endl;
     }
 
-
+    std::cout <<"reading using iterator"<<std::endl;
     for (auto v:safe_ary){
-        std::cout<<v<<" "<<std::endl;
+        std::cout<<v<<" ";
     }
+    std::cout<<std::endl;
+
     std::cout<<"sorting..."<<std::endl;
     std::sort(safe_ary.begin(), safe_ary.end());
 
+    std::cout <<"reading using iterator"<<std::endl;
     for (auto v:safe_ary){
-        std::cout<<v<<" "<<std::endl;
+        std::cout<<v<<" ";
     }
     std::cout << std::endl;
 }
